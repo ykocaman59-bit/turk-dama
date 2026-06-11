@@ -22,10 +22,9 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    padding-bottom: env(safe-area-inset-bottom, 0px); /* Mobil çubuklar için tam koruma */
 }
 
-/* --- TEPEDEKİ TAŞ VE MERMİ HAVUZLARI (EKSİLME SİSTEMLİ) --- */
+/* --- TEPEDEKİ TAŞ VE MERMİ HAVUZLARI --- */
 #top-container {
     width: 100%;
     max-width: 450px;
@@ -37,20 +36,19 @@ body {
 }
 .stone-pool {
     display: flex;
-    justify-content: flex-end; /* Sağdan sola eksilme için sağa yaslama */
+    justify-content: flex-end;
     width: 100%;
     height: 24px;
-    gap: 3px;
-    background: rgba(255,255,255,0.03);
-    padding: 2px;
-    border-radius: 4px;
+    gap: 4px;
+    background: rgba(255,255,255,0.04);
+    padding: 2px 8px;
+    border-radius: 6px;
 }
 .pool-dot {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 2px rgba(255,255,255,0.2);
-    transition: all 0.3s ease;
 }
 .pool-dot.white-p { background: radial-gradient(circle, #ffffff 30%, #a3a3a3 90%); border: 1px solid #777; }
 .pool-dot.black-p { background: radial-gradient(circle, #555555 20%, #111111 90%); border: 1px solid #000; }
@@ -59,10 +57,10 @@ body {
     font-size: 14px;
     background: rgba(43, 26, 12, 0.9);
     color: #e6c280;
-    padding: 5px 16px;
+    padding: 6px 16px;
     border-radius: 20px;
     border: 1px solid #5a330b;
-    margin: 6px auto 0 auto;
+    margin: 4px auto 0 auto;
     font-weight: bold;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
@@ -80,15 +78,14 @@ body {
 #board-wrapper {
     padding: 8px;
     background: #4a2c11; 
-    border-radius: 6px;
+    border-radius: 8px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.9);
     border: 6px solid #2c1d11;
-    transition: border 0.2s ease;
 }
 #board {
     display: grid;
-    grid-template-columns: repeat(8, min(11.5vw, 5.8vh));
-    grid-template-rows: repeat(8, min(11.5vw, 5.8vh));
+    grid-template-columns: repeat(8, min(11.5vw, 5.5vh));
+    grid-template-rows: repeat(8, min(11.5vw, 5.5vh));
     border: 2px solid #1a0f0a;
 }
 .cell {
@@ -100,6 +97,52 @@ body {
 }
 .light { background: var(--board-light); }
 .dark { background: var(--board-bg); }
+
+/* --- 1000190827_2.jpg AHŞAP HALKALI TAŞ DOKULARI --- */
+.piece {
+    width: 88%; height: 88%;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Konsantrik ahşap halka efektleri */
+.piece::before {
+    content: "";
+    position: absolute;
+    width: 65%; height: 65%;
+    border-radius: 50%;
+    border: 2px double rgba(0,0,0,0.15);
+}
+.piece::after {
+    content: "";
+    position: absolute;
+    width: 35%; height: 35%;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+.piece.w-stone { 
+    background: radial-gradient(circle, #f9e2ba 10%, #dca868 90%); 
+    border: 2px solid #b5864d; 
+}
+.piece.w-stone::before, .piece.w-stone::after { border-color: rgba(90, 51, 11, 0.25); }
+
+.piece.b-stone { 
+    background: radial-gradient(circle, #555555 10%, #151515 90%); 
+    border: 2px solid #000000; 
+}
+.piece.b-stone::before, .piece.b-stone::after { border-color: rgba(255, 255, 255, 0.15); }
+
+/* Dama (Şah) Tacı */
+.piece.king-mode .king-crown {
+    position: absolute;
+    font-size: min(5.5vw, 3.2vh);
+    z-index: 10;
+    text-shadow: 0 2px 3px rgba(0,0,0,0.8);
+    transform: translateY(-2px);
+}
 
 /* --- SEÇİM VE HAMLE İŞARETLERİ --- */
 .selected {
@@ -125,36 +168,18 @@ body {
     pointer-events: none;
 }
 
-/* TAŞLAR VE ŞAH (DAMA) */
-.piece {
-    width: 86%; height: 86%;
-    border-radius: 50%;
-    position: relative;
-    box-shadow: 0 5px 6px rgba(0,0,0,0.6);
-}
-.piece.w-stone { background: radial-gradient(circle, #ffffff 10%, #cccccc 90%); border: 2px solid #b5b5b5; }
-.piece.b-stone { background: radial-gradient(circle, #555555 10%, #151515 90%); border: 2px solid #000000; }
-.piece.king-mode::after {
-    content: "👑";
-    position: absolute;
-    font-size: min(5.5vw, 3.2vh);
-    top: 50%; left: 50%;
-    transform: translate(-50%, -55%);
-    text-shadow: 0 2px 3px rgba(0,0,0,0.8);
-}
-
-/* --- GÖRSELDEKİ GERÇEKÇİ KAHVERENGİ AHŞAP ALT BAR (1000190840.jpg) --- */
+/* --- MOBİL NAVİGASYON İÇİN YUKARI KALDIRILMIŞ AHŞAP BAR --- */
 #bottom-bar {
     width: 100%;
-    height: 85px;
+    height: 95px; /* Tuşların üstünde kalması için biraz yükseltildi */
     background: #3a1e0b linear-gradient(to bottom, #4a2912 0%, #2b1406 100%);
     border-top: 3px solid #563118;
-    border-radius: 18px 18px 0 0;
-    box-shadow: 0 -8px 25px rgba(0,0,0,0.8);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.9);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0 10px 12px 10px; /* Alttaki bar taşmalarını engellemek için safe-padding */
+    padding: 0 12px 22px 12px; /* En alttan 22px pay verilerek butonlar tamamen görünür yapıldı */
     z-index: 50;
 }
 .menu-btn {
@@ -170,21 +195,17 @@ body {
     cursor: pointer;
     width: 22%;
     height: 100%;
-    text-decoration: none;
-    transition: transform 0.1s ease;
 }
-.menu-btn:active { transform: scale(0.9); }
 .menu-btn-icon-circle {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border: 2px solid #ffffff;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-size: 16px;
-    font-weight: bold;
     color: #ffffff;
     background: rgba(255, 255, 255, 0.05);
 }
@@ -210,17 +231,6 @@ body {
     width: 320px;
     text-align: center;
     font-weight: bold;
-    animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-@keyframes popIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-.scroll-parchment h2 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #5a330b;
-    padding-bottom: 6px;
 }
 .setup-row {
     display: flex;
@@ -233,8 +243,6 @@ body {
     margin-right: 12px;
     accent-color: #5a330b;
 }
-
-/* Taş Seçim Alanı */
 .stone-pick-flex {
     display: flex;
     justify-content: space-around;
@@ -261,33 +269,9 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 28px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 .stone-pick-box .inner-stone.w { background: radial-gradient(circle, #fff 0%, #ddd 100%); border: 1px solid #bbb; }
 .stone-pick-box .inner-stone.b { background: radial-gradient(circle, #444 0%, #111 100%); border: 1px solid #000; }
-
-/* Üst Tema Değiştirici */
-.theme-nav-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    background: rgba(0,0,0,0.08);
-    padding: 8px;
-    border-radius: 8px;
-}
-.arrow-click { font-size: 24px; cursor: pointer; color: #5a330b; }
-.mini-preview-grid {
-    width: 44px; height: 44px;
-    border: 2px solid #5a330b;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-}
-
-/* Slider */
-.range-wrap { margin: 16px 0; text-align: left; }
-input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
-.range-labels { display: flex; justify-content: space-between; font-size: 13px; color: #4a2c11; margin-top: 4px; }
 
 .action-submit {
     background: #5a330b;
@@ -300,7 +284,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     font-weight: bold;
     width: 100%;
     margin-top: 10px;
-    box-shadow: 0 5px 6px rgba(0,0,0,0.4);
 }
 </style>
 </head>
@@ -320,12 +303,11 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
-<!-- KAHVERENGİ AHŞAP ALT BAR (GÖRSEL UYARLAMALI) -->
+<!-- KAHVERENGİ AHŞAP ALT BAR -->
 <div id="bottom-bar">
     <button class="menu-btn" onclick="openModal('newgame-pop')">
         <div class="menu-btn-icon-circle">▶</div><span>Yeni</span>
     </button>
-    <!-- BAĞIMSIZ HAREKET EDEN GERİ AL BUTONU -->
     <button class="menu-btn" id="live-undo-btn" onclick="triggerUndoAction()" style="display: flex;">
         <div class="menu-btn-icon-circle">↩</div><span>Geri al</span>
     </button>
@@ -337,7 +319,7 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </button>
 </div>
 
-<!-- 1. YENİ OYUN PENCERESİ -->
+<!-- GİRİŞ / YENI OYUN PENCERESİ -->
 <div id="newgame-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Yeni oyun</h2>
@@ -358,118 +340,41 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
-<!-- 2. AYARLAR PENCERESİ -->
+<!-- AYARLAR PENCERESİ -->
 <div id="settings-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ayarlar</h2>
-        <div class="theme-nav-row">
-            <span class="arrow-click" onclick="toggleTheme(-1)">◀</span>
-            <div class="mini-preview-grid" id="mini-box">
-                <div style="background:#e8c39e;"></div><div style="background:#b07c53;"></div>
-                <div style="background:#b07c53;"></div><div style="background:#e8c39e;"></div>
-            </div>
-            <span class="arrow-click" onclick="toggleTheme(1)">▶</span>
-        </div>
-        <div class="range-wrap">
-            <label>Zorluk</label>
-            <input type="range" id="bot-tier" min="1" max="3" value="2">
-            <div class="range-labels"><span>kolay</span><span>seviye 3</span><span>zor</span></div>
-        </div>
         <div class="setup-row"><input type="checkbox" id="opt-lastmove" checked onchange="renderBoard()"><label>Son hamleyi göster</label></div>
         <div class="setup-row"><input type="checkbox" id="opt-undo" checked onchange="handleUndoCheckboxChange()"><label>Geri almayı etkinleştir</label></div>
         <div class="setup-row"><input type="checkbox" id="opt-hints" checked><label>Kareleri işaretle</label></div>
-        <div class="setup-row"><input type="checkbox" id="opt-frame" checked onchange="applyFrameSettings()"><label>Tahta çerçevesini göster</label></div>
-        <div class="setup-row"><input type="checkbox" id="opt-audio" checked><label>Sesleri çal</label></div>
         <button class="action-submit" onclick="closeModal('settings-pop')">Tamam</button>
     </div>
 </div>
 
-<!-- 3. ANA MENÜ PENCERESİ -->
+<!-- ANA MENÜ PENCERESİ -->
 <div id="mainmenu-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ana Menü</h2>
-        <p style="font-size:14px; margin: 12px 0;">Türk Daması Pro Sürüm v1.5</p>
         <button class="action-submit" onclick="closeModal('mainmenu-pop')">Oyuna Dön</button>
         <button class="action-submit" style="background:#8c2d19;" onclick="location.reload()">Oyunu Sıfırla</button>
     </div>
 </div>
 
-<!-- OYUNA ÖZEL ŞIK PARŞÖMEN UYARI PENCERESİ (ALERT YERİNE) -->
+<!-- ÖZEL UYARI PENCERESİ -->
 <div id="alert-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment" style="border-color: #8c2d19;">
         <h2 style="color: #8c2d19; border-bottom-color: #8c2d19;">Sistem Uyarısı</h2>
-        <p id="alert-message" style="margin: 20px 0; font-size: 15px; line-height: 1.4;"></p>
+        <p id="alert-message" style="margin: 20px 0; font-size: 15px;"></p>
         <button class="action-submit" style="background: #8c2d19;" onclick="closeModal('alert-pop')">Kapat</button>
     </div>
 </div>
 
-<!-- BİTİŞ EKRANI -->
-<div id="gameover-pop" class="modal-layer" style="display: none;">
-    <div class="scroll-parchment">
-        <h2 id="over-title">Oyun Bitti</h2>
-        <p id="over-desc" style="margin: 15px 0;"></p>
-        <button class="action-submit" onclick="closeModal('gameover-pop'); openModal('newgame-pop');">Yeniden Başla</button>
-    </div>
-</div>
-
 <script>
-// --- SES SİSTEMİ ---
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playAudio(type) {
-    if (!document.getElementById("opt-audio").checked) return;
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
-
-    if (type === "move") {
-        osc.frequency.setValueAtTime(250, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-    } else if (type === "eat") {
-        osc.frequency.setValueAtTime(450, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.12);
-    } else if (type === "king") {
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(350, audioCtx.currentTime);
-        osc.frequency.setValueAtTime(550, audioCtx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-    }
-}
-
-// --- ÖZEL MODAL UYARI MOTORU ---
-function showCustomAlert(msg) {
-    document.getElementById("alert-message").textContent = msg;
-    openModal('alert-pop');
-}
-
-// --- TİK YAPILDIĞINDA BUTON SİLME/EKLEME MOTORU ---
-function handleUndoCheckboxChange() {
-    let isEnabled = document.getElementById("opt-undo").checked;
-    document.getElementById("live-undo-btn").style.display = isEnabled ? "flex" : "none";
-}
-
-// --- TEMA SİSTEMİ ---
-let currentThemeIdx = 0;
-const themes = [
-    { bg: '#b07c53', light: '#e8c39e' },
-    { bg: '#2b5797', light: '#719bd6' },
-    { bg: '#272727', light: '#999999' }
+// Başlangıçta boş array atayarak çökme hatasını tamamen önlüyoruz
+let grid = [
+    ["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],
+    ["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""]
 ];
-function toggleTheme(direction) {
-    currentThemeIdx = (currentThemeIdx + direction + themes.length) % themes.length;
-    let t = themes[currentThemeIdx];
-    document.documentElement.style.setProperty('--board-bg', t.bg);
-    document.documentElement.style.setProperty('--board-light', t.light);
-    let cells = document.getElementById("mini-box").children;
-    cells[0].style.background = t.light; cells[1].style.background = t.bg;
-    cells[2].style.background = t.bg; cells[3].style.background = t.light;
-}
-
-// --- GLOBAL OYUN DEĞİŞKENLERİ ---
-let grid = [];
 let activeTurn = "white";
 let playerColor = "white";
 let isSinglePlayer = true;
@@ -488,14 +393,19 @@ function selectSide(color) {
     document.getElementById(color === "white" ? "pick-w" : "pick-b").classList.add("selected-pick");
 }
 
-function applyFrameSettings() {
-    let show = document.getElementById("opt-frame").checked;
-    document.getElementById("board-wrapper").style.border = show ? "6px solid #2c1d11" : "none";
+function handleUndoCheckboxChange() {
+    let isEnabled = document.getElementById("opt-undo").checked;
+    document.getElementById("live-undo-btn").style.display = isEnabled ? "flex" : "none";
 }
 
+function showCustomAlert(msg) {
+    document.getElementById("alert-message").textContent = msg;
+    openModal('alert-pop');
+}
+
+// SAYFA YÜKLENDİĞİNDE ARTIK GÜVENLE BAŞLIYOR VE KİLİTLENMİYOR
 window.addEventListener("DOMContentLoaded", () => {
-    openModal('newgame-pop');
-    handleUndoCheckboxChange();
+    openModal('newgame-pop'); 
 });
 
 function startNewGame() {
@@ -518,13 +428,13 @@ function startNewGame() {
     lastExecutedMove = null;
     historySnapshot = null;
 
-    applyFrameSettings();
     updateTopPools();
     renderBoard();
-    triggerBotCheck();
+    if(isSinglePlayer && activeTurn !== playerColor) {
+        setTimeout(triggerBotIntelligence, 600);
+    }
 }
 
-// SAĞDAN SOLA DOĞRU GERÇEKÇİ EKSİLME MOTORU
 function updateTopPools() {
     let currentWhiteCount = 0, currentBlackCount = 0;
     for(let r=0; r<8; r++) {
@@ -536,9 +446,10 @@ function updateTopPools() {
     
     let pWhites = document.getElementById("pool-whites");
     let pBlacks = document.getElementById("pool-blacks");
+    if(!pWhites || !pBlacks) return;
+    
     pWhites.innerHTML = ""; pBlacks.innerHTML = "";
 
-    // Yenilen her taş için havuzdaki eleman sayısı düşer, sağa yaslı olduğu için sağdan sola eksilir
     for(let i=0; i<currentWhiteCount; i++) {
         let d = document.createElement("div"); d.className = "pool-dot white-p";
         pWhites.appendChild(d);
@@ -549,7 +460,6 @@ function updateTopPools() {
     }
 }
 
-// GERİ ALMA SİSTEMİ (ÖZEL PENCERE ENJEKSİYONLU)
 function saveState() {
     historySnapshot = {
         grid: JSON.parse(JSON.stringify(grid)),
@@ -559,25 +469,20 @@ function saveState() {
 }
 
 function triggerUndoAction() {
-    if (!document.getElementById("opt-undo").checked) return;
-    
     if (!historySnapshot) {
-        showCustomAlert("Geri alınacak hamle bulunamadı! Lütfen önce bir hamle yapın.");
+        showCustomAlert("Geri alınacak hamle bulunamadı!");
         return;
     }
-    
     grid = historySnapshot.grid;
     activeTurn = historySnapshot.activeTurn;
     lastExecutedMove = historySnapshot.lastExecutedMove;
     historySnapshot = null;
     selectedPos = null;
     comboPiecePos = null;
-    
     updateTopPools();
     renderBoard();
 }
 
-// --- KURAL VE YAPAY ZEKA ALGORİTMALARI ---
 function isInBounds(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
 
 function teamHasCaptureOption(side) {
@@ -604,16 +509,14 @@ function calculateRawMoves(r, c) {
         let illegalDir = isWhite ? [1,0] : [-1,0]; 
         for(let [dr, dc] of directions) {
             if(dr === illegalDir[0] && dc === illegalDir[1]) continue;
-            
             let nr = r + dr, nc = c + dc;
             if(isInBounds(nr, nc) && grid[nr][nc] === "") {
                 moveList.push({ r: nr, c: nc, type: "move" });
             }
-            
             let lr = r + dr*2, lc = c + dc*2;
             if(isInBounds(lr, lc)) {
                 let victimPiece = grid[nr][nc];
-                if(victimPiece !== && isWhite !== "wW".includes(victimPiece) && grid[lr][lc] === "") {
+                if(victimPiece !== "" && isWhite !== "wW".includes(victimPiece) && grid[lr][lc] === "") {
                     moveList.push({ r: lr, c: lc, type: "capture", victim: { r: nr, c: nc } });
                 }
             }
@@ -646,7 +549,6 @@ function getLegalMoves(r, c) {
     if(comboPiecePos && (comboPiecePos.r !== r || comboPiecePos.c !== c)) return [];
     let list = calculateRawMoves(r, c);
     let side = "wW".includes(grid[r][c]) ? "white" : "black";
-    
     if(teamHasCaptureOption(side)) {
         list = list.filter(m => m.type === "capture");
     }
@@ -655,9 +557,10 @@ function getLegalMoves(r, c) {
 
 function renderBoard() {
     let bEl = document.getElementById("board");
+    if(!bEl) return;
     bEl.innerHTML = "";
-    let showHints = document.getElementById("opt-hints").checked;
-    let showLastMove = document.getElementById("opt-lastmove").checked;
+    let showHints = document.getElementById("opt-hints") ? document.getElementById("opt-hints").checked : true;
+    let showLastMove = document.getElementById("opt-lastmove") ? document.getElementById("opt-lastmove").checked : true;
 
     for(let r=0; r<8; r++) {
         for(let c=0; c<8; c++) {
@@ -665,7 +568,6 @@ function renderBoard() {
             square.className = "cell " + ((r + c) % 2 ? "dark" : "light");
 
             if(selectedPos && selectedPos.r === r && selectedPos.c === c) square.classList.add("selected");
-            
             if(showLastMove && lastExecutedMove && ((lastExecutedMove.from.r === r && lastExecutedMove.from.c === c) || (lastExecutedMove.to.r === r && lastExecutedMove.to.c === c))) {
                 square.classList.add("last-move-cell");
             }
@@ -673,7 +575,14 @@ function renderBoard() {
             let token = grid[r][c];
             if(token) {
                 let pDiv = document.createElement("div");
-                pDiv.className = `piece ${"wW".includes(token) ? 'w-stone' : 'b-stone'} ${"WB".includes(token) ? 'king-mode' : ''}`;
+                pDiv.className = `piece ${"wW".includes(token) ? 'w-stone' : 'b-stone'}`;
+                if("WB".includes(token)) {
+                    pDiv.classList.add("king-mode");
+                    let crown = document.createElement("span");
+                    crown.className = "king-crown";
+                    crown.textContent = "👑";
+                    pDiv.appendChild(crown);
+                }
                 square.appendChild(pDiv);
             }
 
@@ -686,12 +595,10 @@ function renderBoard() {
                     square.appendChild(indicator);
                 }
             }
-
             square.onclick = () => handleSquareClick(r, c);
             bEl.appendChild(square);
         }
     }
-
     let sideText = activeTurn === "white" ? "Beyaz" : "Siyah";
     let modeText = (isSinglePlayer && activeTurn !== playerColor) ? "(Bot Oynuyor...)" : "(Sizde)";
     document.getElementById("status-bar").textContent = `Sıra: ${sideText} ${modeText}`;
@@ -699,7 +606,6 @@ function renderBoard() {
 
 function handleSquareClick(r, c) {
     if(isSinglePlayer && activeTurn !== playerColor) return;
-    
     let clickedToken = grid[r][c];
     if(clickedToken && ((activeTurn === "white") === "wW".includes(clickedToken))) {
         if(comboPiecePos && (comboPiecePos.r !== r || comboPiecePos.c !== c)) return;
@@ -717,23 +623,16 @@ function executeAction(r, c) {
     if(!matched) return;
 
     saveState();
-
     let movingPiece = grid[selectedPos.r][selectedPos.c];
     if(matched.type === "capture") {
         grid[matched.victim.r][matched.victim.c] = "";
-        playAudio("eat");
-    } else {
-        playAudio("move");
     }
-
     grid[r][c] = movingPiece;
     grid[selectedPos.r][selectedPos.c] = "";
     lastExecutedMove = { from: { r: selectedPos.r, c: selectedPos.c }, to: { r, c } };
 
-    let becameKing = false;
-    if(movingPiece === "w" && r === 0) { grid[r][c] = "W"; becameKing = true; }
-    if(movingPiece === "b" && r === 7) { grid[r][c] = "B"; becameKing = true; }
-    if(becameKing) playAudio("king");
+    if(movingPiece === "w" && r === 0) grid[r][c] = "W";
+    if(movingPiece === "b" && r === 7) grid[r][c] = "B";
 
     updateTopPools();
 
@@ -749,13 +648,9 @@ function executeAction(r, c) {
             return;
         }
     }
-
-    comboPiecePos = null;
-    selectedPos = null;
+    comboPiecePos = null; selectedPos = null;
     activeTurn = (activeTurn === "white") ? "black" : "white";
     renderBoard();
-
-    if(checkGameOver()) return;
     triggerBotCheck();
 }
 
@@ -768,7 +663,6 @@ function triggerBotCheck() {
 function triggerBotIntelligence() {
     let availableUnits = [];
     let alliance = activeTurn === "white" ? "wW" : "bB";
-    
     for(let r=0; r<8; r++) {
         for(let c=0; c<8; c++) {
             if(alliance.includes(grid[r][c])) {
@@ -779,22 +673,15 @@ function triggerBotIntelligence() {
     }
     if(availableUnits.length === 0) return;
 
-    let difficultyTier = parseInt(document.getElementById("bot-tier").value);
     let hasCaptureMove = availableUnits.some(u => u.options.some(o => o.type === "capture"));
-
-    if(hasCaptureMove || difficultyTier === 3) {
+    if(hasCaptureMove) {
         let flattenedMoves = [];
         availableUnits.forEach(u => {
             u.options.forEach(o => {
-                flattenedMoves.push({
-                    from: { r: u.r, c: u.c },
-                    to: o,
-                    weight: (o.type === "capture" ? 20 : 1)
-                });
+                if(o.type === "capture") flattenedMoves.push({ from: { r: u.r, c: u.c }, to: o });
             });
         });
-        flattenedMoves.sort((a, b) => b.weight - a.weight);
-        let optimal = flattenedMoves[0];
+        let optimal = flattenedMoves[Math.floor(Math.random() * flattenedMoves.length)];
         selectedPos = optimal.from;
         executeAction(optimal.to.r, optimal.to.c);
     } else {
@@ -804,28 +691,7 @@ function triggerBotIntelligence() {
         executeAction(chosenMove.r, chosenMove.c);
     }
 }
-
-function checkGameOver() {
-    let wCount = 0, bCount = 0, wHasMoves = false, bHasMoves = false;
-    for(let r=0; r<8; r++) {
-        for(let c=0; c<8; c++) {
-            if("wW".includes(grid[r][c])) { wCount++; if(getLegalMoves(r,c).length > 0) wHasMoves = true; }
-            if("bB".includes(grid[r][c])) { bCount++; if(getLegalMoves(r,c).length > 0) bHasMoves = true; }
-        }
-    }
-    
-    let winner = null;
-    if(bCount === 0 || !bHasMoves) winner = "Beyaz";
-    if(wCount === 0 || !wHasMoves) winner = "Siyah";
-
-    if(winner) {
-        document.getElementById("over-title").textContent = "Oyun Tamamlandı";
-        document.getElementById("over-desc").textContent = `Tebrikler, ${winner} tarafı maçı kazandı!`;
-        openModal('gameover-pop');
-        return true;
-    }
-    return false;
-}
 </script>
 </body>
 </html>
+    
