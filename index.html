@@ -1,189 +1,210 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Türk Daması</title>
+<meta charset="UTF-8" />
+<title>Dama Oyunu</title>
 
 <style>
-body{
-    font-family:Arial,sans-serif;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    background:#f0f0f0;
-}
-
-h1{
-    margin-top:20px;
-}
-
-#board{
-    display:grid;
-    grid-template-columns:repeat(8,70px);
-    grid-template-rows:repeat(8,70px);
-    border:4px solid #333;
-}
-
-.cell{
-    width:70px;
-    height:70px;
+body {
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:36px;
+    height:100vh;
+    background:#222;
+    margin:0;
+}
+
+#board {
+    display:grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    border:3px solid #000;
+    user-select:none;
+}
+
+.cell {
+    width:60px;
+    height:60px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.black { background:#769656; }
+.white { background:#eeeed2; }
+
+.piece {
+    width:45px;
+    height:45px;
+    border-radius:50%;
     cursor:pointer;
-}
-
-.light{
-    background:#f5deb3;
-}
-
-.dark{
-    background:#c19a6b;
-}
-
-.selected{
-    outline:4px solid yellow;
-}
-
-#status{
-    margin:15px;
-    font-size:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
     font-weight:bold;
+    user-select:none;
+}
+
+.red { background:red; color:white; }
+.blue { background:blue; color:white; }
+
+.selected {
+    outline:3px solid yellow;
 }
 </style>
 </head>
+
 <body>
 
-<h1>Türk Daması</h1>
-
-<div id="status">Sıra: Beyaz</div>
 <div id="board"></div>
 
 <script>
-const boardElement = document.getElementById("board");
-const statusText = document.getElementById("status");
+const board = document.getElementById("board");
 
-let currentPlayer = "white";
 let selected = null;
+let turn = "red";
 
-let board = [
-["","","","","","","",""],
-["b","b","b","b","b","b","b","b"],
-["b","b","b","b","b","b","b","b"],
-["","","","","","","",""],
-["","","","","","","",""],
-["w","w","w","w","w","w","w","w"],
-["w","w","w","w","w","w","w","w"],
-["","","","","","","",""]
-];
+let state = createBoard();
 
-function drawBoard(){
-    boardElement.innerHTML = "";
+function createBoard() {
+    let b = Array(8).fill(null).map(()=>Array(8).fill(null));
 
-    for(let row=0; row<8; row++){
-        for(let col=0; col<8; col++){
-
-            const cell = document.createElement("div");
-
-            cell.className =
-                "cell " +
-                ((row+col)%2===0 ? "light" : "dark");
-
-            if(selected &&
-               selected.row===row &&
-               selected.col===col){
-                cell.classList.add("selected");
-            }
-
-            if(board[row][col]==="w"){
-                cell.textContent="⚪";
-            }else if(board[row][col]==="b"){
-                cell.textContent="⚫";
-            }
-
-            cell.addEventListener("click",
-                ()=>cellClick(row,col));
-
-            boardElement.appendChild(cell);
+    for(let y=0;y<3;y++){
+        for(let x=0;x<8;x++){
+            if((x+y)%2===1) b[y][x] = {color:"blue", king:false};
         }
     }
 
-    statusText.textContent =
-        "Sıra: " +
-        (currentPlayer==="white" ? "Beyaz" : "Siyah");
+    for(let y=5;y<8;y++){
+        for(let x=0;x<8;x++){
+            if((x+y)%2===1) b[y][x] = {color:"red", king:false};
+        }
+    }
+    return b;
 }
 
-function cellClick(row,col){
+function draw(){
+    board.innerHTML="";
 
-    const piece = board[row][col];
+    for(let y=0;y<8;y++){
+        for(let x=0;x<8;x++){
 
-    if(piece){
-        if(
-            (currentPlayer==="white" && piece==="w") ||
-            (currentPlayer==="black" && piece==="b")
-        ){
-            selected = {row,col};
-            drawBoard();
+            let cell = document.createElement("div");
+            cell.className = "cell " + ((x+y)%2===0 ? "white":"black");
+
+            let p = state[y][x];
+
+            if(p){
+                let piece = document.createElement("div");
+                piece.className = "piece " + p.color;
+
+                piece.innerHTML = p.king ? "👑" : "";
+
+                piece.onclick = ()=>select(x,y);
+
+                if(selected && selected.x===x && selected.y===y){
+                    piece.classList.add("selected");
+                }
+
+                cell.appendChild(piece);
+            }
+
+            cell.onclick = ()=>move(x,y);
+
+            board.appendChild(cell);
         }
-        return;
     }
+}
 
+function select(x,y){
+    let p = state[y][x];
+    if(p && p.color===turn){
+        selected = {x,y};
+        draw();
+    }
+}
+
+function move(x,y){
     if(!selected) return;
 
-    movePiece(row,col);
+    let sx = selected.x;
+    let sy = selected.y;
+
+    let piece = state[sy][sx];
+    let dx = x - sx;
+    let dy = y - sy;
+
+    let moves = getMoves(sx,sy,piece);
+
+    let valid = moves.find(m=>m.x===x && m.y===y);
+
+    if(!valid) return;
+
+    if(valid.type==="capture"){
+        state[valid.captured.y][valid.captured.x] = null;
+    }
+
+    state[y][x] = piece;
+    state[sy][sx] = null;
+
+    if(piece.color==="red" && y===0) piece.king=true;
+    if(piece.color==="blue" && y===7) piece.king=true;
+
+    turn = turn==="red"?"blue":"red";
+    selected=null;
+
+    draw();
 }
 
-function movePiece(newRow,newCol){
+function getMoves(x,y,piece){
+    let moves = [];
 
-    const {row,col} = selected;
+    let dirs = piece.king ?
+        [[1,1],[1,-1],[-1,1],[-1,-1]] :
+        piece.color==="red" ?
+        [[-1,-1],[-1,1]] :
+        [[1,1],[1,-1]];
 
-    const piece = board[row][col];
+    for(let [dx,dy] of dirs){
 
-    let valid = false;
+        let nx = x+dx;
+        let ny = y+dy;
 
-    if(piece==="w"){
-        if(
-            newRow===row-1 &&
-            (
-                newCol===col ||
-                newCol===col-1 ||
-                newCol===col+1
-            )
-        ){
-            valid = true;
+        if(empty(nx,ny)){
+            moves.push({x:nx,y:ny,type:"move"});
+        }
+
+        let cx = x+dx;
+        let cy = y+dy;
+        let lx = x+dx*2;
+        let ly = y+dy*2;
+
+        if(enemy(cx,cy,piece) && empty(lx,ly)){
+            moves.push({
+                x:lx,
+                y:ly,
+                type:"capture",
+                captured:{x:cx,y:cy}
+            });
         }
     }
 
-    if(piece==="b"){
-        if(
-            newRow===row+1 &&
-            (
-                newCol===col ||
-                newCol===col-1 ||
-                newCol===col+1
-            )
-        ){
-            valid = true;
-        }
-    }
-
-    if(valid){
-        board[newRow][newCol]=piece;
-        board[row][col]="";
-
-        currentPlayer =
-            currentPlayer==="white"
-            ? "black"
-            : "white";
-    }
-
-    selected = null;
-    drawBoard();
+    let captures = moves.filter(m=>m.type==="capture");
+    return captures.length ? captures : moves;
 }
 
-drawBoard();
+function empty(x,y){
+    return x>=0 && x<8 && y>=0 && y<8 && !state[y][x];
+}
+
+function enemy(x,y,piece){
+    return x>=0 && x<8 && y>=0 && y<8 &&
+           state[y][x] &&
+           state[y][x].color !== piece.color;
+}
+
+draw();
 </script>
 
 </body>
