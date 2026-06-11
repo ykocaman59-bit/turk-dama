@@ -24,6 +24,32 @@ body {
     overflow: hidden;
 }
 
+/* --- İLK AÇILIŞ / GİRİŞ EKRANI (SPLASH SCREEN) --- */
+#splash-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vw; height: 100vh;
+    background: #1a0f0a linear-gradient(135deg, #2c1608 0%, #000000 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.splash-logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #e6c280;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.9);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+.splash-sub {
+    font-size: 14px;
+    color: #b5864d;
+    letter-spacing: 4px;
+}
+
 /* --- TEPEDEKİ TAŞ VE MERMİ HAVUZLARI --- */
 #top-container {
     width: 100%;
@@ -98,7 +124,7 @@ body {
 .light { background: var(--board-light); }
 .dark { background: var(--board-bg); }
 
-/* --- 1000190827_2.jpg AHŞAP HALKALI TAŞ DOKULARI --- */
+/* --- GERÇEKÇİ AHŞAP HALKALI TAŞLAR --- */
 .piece {
     width: 88%; height: 88%;
     border-radius: 50%;
@@ -108,7 +134,6 @@ body {
     justify-content: center;
     align-items: center;
 }
-/* Konsantrik ahşap halka efektleri */
 .piece::before {
     content: "";
     position: absolute;
@@ -123,19 +148,12 @@ body {
     border-radius: 50%;
     border: 1px solid rgba(0,0,0,0.2);
 }
-.piece.w-stone { 
-    background: radial-gradient(circle, #f9e2ba 10%, #dca868 90%); 
-    border: 2px solid #b5864d; 
-}
+.piece.w-stone { background: radial-gradient(circle, #f9e2ba 10%, #dca868 90%); border: 2px solid #b5864d; }
 .piece.w-stone::before, .piece.w-stone::after { border-color: rgba(90, 51, 11, 0.25); }
 
-.piece.b-stone { 
-    background: radial-gradient(circle, #555555 10%, #151515 90%); 
-    border: 2px solid #000000; 
-}
+.piece.b-stone { background: radial-gradient(circle, #555555 10%, #151515 90%); border: 2px solid #000000; }
 .piece.b-stone::before, .piece.b-stone::after { border-color: rgba(255, 255, 255, 0.15); }
 
-/* Dama (Şah) Tacı */
 .piece.king-mode .king-crown {
     position: absolute;
     font-size: min(5.5vw, 3.2vh);
@@ -145,33 +163,15 @@ body {
 }
 
 /* --- SEÇİM VE HAMLE İŞARETLERİ --- */
-.selected {
-    outline: 3px solid #ffeb3b;
-    outline-offset: -3px;
-    z-index: 5;
-}
-.last-move-cell {
-    box-shadow: inset 0 0 12px 5px rgba(241, 196, 15, 0.8);
-}
-.hint-move {
-    position: absolute;
-    width: 35%; height: 35%;
-    background: rgba(46, 204, 113, 0.85);
-    border-radius: 50%;
-    pointer-events: none;
-}
-.hint-capture {
-    position: absolute;
-    width: 100%; height: 100%;
-    background: rgba(231, 76, 60, 0.35);
-    border: 3px solid #e74c3c;
-    pointer-events: none;
-}
+.selected { outline: 3px solid #ffeb3b; outline-offset: -3px; z-index: 5; }
+.last-move-cell { box-shadow: inset 0 0 12px 5px rgba(241, 196, 15, 0.8); }
+.hint-move { position: absolute; width: 35%; height: 35%; background: rgba(46, 204, 113, 0.85); border-radius: 50%; pointer-events: none; }
+.hint-capture { position: absolute; width: 100%; height: 100%; background: rgba(231, 76, 60, 0.35); border: 3px solid #e74c3c; pointer-events: none; }
 
-/* --- MOBİL NAVİGASYON İÇİN YUKARI KALDIRILMIŞ AHŞAP BAR --- */
+/* --- GÜVENLİ ALAN PAYLI AHŞAP ALT BAR --- */
 #bottom-bar {
     width: 100%;
-    height: 95px; /* Tuşların üstünde kalması için biraz yükseltildi */
+    height: 95px;
     background: #3a1e0b linear-gradient(to bottom, #4a2912 0%, #2b1406 100%);
     border-top: 3px solid #563118;
     border-radius: 20px 20px 0 0;
@@ -179,7 +179,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0 12px 22px 12px; /* En alttan 22px pay verilerek butonlar tamamen görünür yapıldı */
+    padding: 0 12px 22px 12px;
     z-index: 50;
 }
 .menu-btn {
@@ -196,6 +196,7 @@ body {
     width: 22%;
     height: 100%;
 }
+.menu-btn:active { transform: scale(0.92); }
 .menu-btn-icon-circle {
     width: 36px;
     height: 36px;
@@ -232,10 +233,16 @@ body {
     text-align: center;
     font-weight: bold;
 }
+.scroll-parchment h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #5a330b;
+    padding-bottom: 4px;
+}
 .setup-row {
     display: flex;
     align-items: center;
-    margin: 14px 0;
+    margin: 12px 0;
     font-size: 16px;
 }
 .setup-row input[type="checkbox"] {
@@ -243,13 +250,16 @@ body {
     margin-right: 12px;
     accent-color: #5a330b;
 }
-.stone-pick-flex {
-    display: flex;
-    justify-content: space-around;
-    margin: 18px 0;
-}
+
+/* Slider Tasarımı */
+.range-wrap { margin: 14px 0; text-align: left; }
+.range-wrap label { font-size: 15px; display: block; margin-bottom: 4px; }
+input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
+.range-labels { display: flex; justify-content: space-between; font-size: 12px; color: #5a330b; margin-top: 2px; }
+
+.stone-pick-flex { display: flex; justify-content: space-around; margin: 15px 0; }
 .stone-pick-box {
-    width: 85px; height: 85px;
+    width: 80px; height: 80px;
     border: 3px solid #5a330b;
     border-radius: 10px;
     display: flex;
@@ -258,18 +268,8 @@ body {
     cursor: pointer;
     background: rgba(255,255,255,0.2);
 }
-.stone-pick-box.selected-pick {
-    outline: 4px solid #2ecc71;
-    background: rgba(46, 204, 113, 0.3);
-}
-.stone-pick-box .inner-stone {
-    width: 55px; height: 55px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-}
+.stone-pick-box.selected-pick { outline: 4px solid #2ecc71; background: rgba(46, 204, 113, 0.3); }
+.stone-pick-box .inner-stone { width: 52px; height: 52px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; }
 .stone-pick-box .inner-stone.w { background: radial-gradient(circle, #fff 0%, #ddd 100%); border: 1px solid #bbb; }
 .stone-pick-box .inner-stone.b { background: radial-gradient(circle, #444 0%, #111 100%); border: 1px solid #000; }
 
@@ -284,31 +284,34 @@ body {
     font-weight: bold;
     width: 100%;
     margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 </style>
 </head>
 <body>
 
-<!-- ÜST TARAFTAKİ TAŞ/MERMİ HAVUZLARI -->
+<div id="splash-screen">
+    <div class="splash-logo">TÜRK DAMASI PRO</div>
+    <div class="splash-sub">YKOCAMAN59</div>
+</div>
+
 <div id="top-container">
     <div class="stone-pool" id="pool-blacks"></div>
     <div class="stone-pool" id="pool-whites"></div>
-    <div id="status-bar">Sıra: Beyaz (Sizde)</div>
+    <div id="status-bar">Yükleniyor...</div>
 </div>
 
-<!-- OYUN TAHTASI -->
 <div id="board-container">
     <div id="board-wrapper">
         <div id="board"></div>
     </div>
 </div>
 
-<!-- KAHVERENGİ AHŞAP ALT BAR -->
 <div id="bottom-bar">
     <button class="menu-btn" onclick="openModal('newgame-pop')">
         <div class="menu-btn-icon-circle">▶</div><span>Yeni</span>
     </button>
-    <button class="menu-btn" id="live-undo-btn" onclick="triggerUndoAction()" style="display: flex;">
+    <button class="menu-btn" id="live-undo-btn" onclick="triggerUndoAction()">
         <div class="menu-btn-icon-circle">↩</div><span>Geri al</span>
     </button>
     <button class="menu-btn" onclick="openModal('settings-pop')">
@@ -319,15 +322,14 @@ body {
     </button>
 </div>
 
-<!-- GİRİŞ / YENI OYUN PENCERESİ -->
 <div id="newgame-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Yeni oyun</h2>
         <div class="setup-row">
             <input type="checkbox" id="bot-active" checked>
-            <label for="bot-active">Tek oyuncu</label>
+            <label for="bot-active">Tek oyuncu (Bot'a Karşı)</label>
         </div>
-        <p style="margin-top: 12px;">Taş seç</p>
+        <p style="margin-top: 10px;">Taş Rengini Seç</p>
         <div class="stone-pick-flex">
             <div class="stone-pick-box selected-pick" id="pick-w" onclick="selectSide('white')">
                 <div class="inner-stone w">👑</div>
@@ -336,31 +338,35 @@ body {
                 <div class="inner-stone b">👑</div>
             </div>
         </div>
-        <button class="action-submit" onclick="startNewGame()">Başla</button>
+        <button class="action-submit" onclick="startNewGame()">Oyunu Başlat</button>
     </div>
 </div>
 
-<!-- AYARLAR PENCERESİ -->
 <div id="settings-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ayarlar</h2>
+        <div class="range-wrap">
+            <label>Bot Zorluk Derecesi</label>
+            <input type="range" id="bot-tier" min="1" max="3" value="2">
+            <div class="range-labels"><span>Kolay</span><span>Normal</span><span>Zor</span></div>
+        </div>
         <div class="setup-row"><input type="checkbox" id="opt-lastmove" checked onchange="renderBoard()"><label>Son hamleyi göster</label></div>
         <div class="setup-row"><input type="checkbox" id="opt-undo" checked onchange="handleUndoCheckboxChange()"><label>Geri almayı etkinleştir</label></div>
-        <div class="setup-row"><input type="checkbox" id="opt-hints" checked><label>Kareleri işaretle</label></div>
-        <button class="action-submit" onclick="closeModal('settings-pop')">Tamam</button>
+        <div class="setup-row"><input type="checkbox" id="opt-hints" checked><label>Gidilecek kareleri işaretle</label></div>
+        <div class="setup-row"><input type="checkbox" id="opt-frame" checked onchange="applyFrameSettings()"><label>Tahta çerçevesini göster</label></div>
+        <div class="setup-row"><input type="checkbox" id="opt-audio" checked><label>Sesleri çal</label></div>
+        <button class="action-submit" onclick="closeModal('settings-pop')">Ayarları Kaydet</button>
     </div>
 </div>
 
-<!-- ANA MENÜ PENCERESİ -->
 <div id="mainmenu-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ana Menü</h2>
         <button class="action-submit" onclick="closeModal('mainmenu-pop')">Oyuna Dön</button>
-        <button class="action-submit" style="background:#8c2d19;" onclick="location.reload()">Oyunu Sıfırla</button>
+        <button class="action-submit" style="background:#8c2d19;" onclick="location.reload()">Sayfayı Yenile</button>
     </div>
 </div>
 
-<!-- ÖZEL UYARI PENCERESİ -->
 <div id="alert-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment" style="border-color: #8c2d19;">
         <h2 style="color: #8c2d19; border-bottom-color: #8c2d19;">Sistem Uyarısı</h2>
@@ -370,7 +376,36 @@ body {
 </div>
 
 <script>
-// Başlangıçta boş array atayarak çökme hatasını tamamen önlüyoruz
+// --- GLOBAL SES SİSTEMİ ---
+let audioCtx = null;
+function playAudio(type) {
+    if (!document.getElementById("opt-audio").checked) return;
+    try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+
+        if (type === "move") {
+            osc.frequency.setValueAtTime(280, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.06);
+        } else if (type === "eat") {
+            osc.frequency.setValueAtTime(420, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(160, audioCtx.currentTime + 0.14);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.14);
+        } else if (type === "king") {
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(580, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.22);
+        }
+    } catch(e) { console.log("Ses çalınamadı", e); }
+}
+
+// OYUN HAFIZA ALANI
 let grid = [
     ["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],
     ["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""]
@@ -398,14 +433,27 @@ function handleUndoCheckboxChange() {
     document.getElementById("live-undo-btn").style.display = isEnabled ? "flex" : "none";
 }
 
+function applyFrameSettings() {
+    let show = document.getElementById("opt-frame").checked;
+    document.getElementById("board-wrapper").style.border = show ? "6px solid #2c1d11" : "none";
+}
+
 function showCustomAlert(msg) {
     document.getElementById("alert-message").textContent = msg;
     openModal('alert-pop');
 }
 
-// SAYFA YÜKLENDİĞİNDE ARTIK GÜVENLE BAŞLIYOR VE KİLİTLENMİYOR
+// GİRİŞ EKRANI SÜRESİ (2 Saniye parıldar ve kaybolur)
 window.addEventListener("DOMContentLoaded", () => {
-    openModal('newgame-pop'); 
+    handleUndoCheckboxChange();
+    setTimeout(() => {
+        let splash = document.getElementById("splash-screen");
+        splash.style.opacity = "0";
+        setTimeout(() => {
+            splash.style.display = "none";
+            openModal('newgame-pop');
+        }, 500);
+    }, 2000);
 });
 
 function startNewGame() {
@@ -428,6 +476,7 @@ function startNewGame() {
     lastExecutedMove = null;
     historySnapshot = null;
 
+    applyFrameSettings();
     updateTopPools();
     renderBoard();
     if(isSinglePlayer && activeTurn !== playerColor) {
@@ -443,13 +492,11 @@ function updateTopPools() {
             if("bB".includes(grid[r][c])) currentBlackCount++;
         }
     }
-    
     let pWhites = document.getElementById("pool-whites");
     let pBlacks = document.getElementById("pool-blacks");
     if(!pWhites || !pBlacks) return;
     
     pWhites.innerHTML = ""; pBlacks.innerHTML = "";
-
     for(let i=0; i<currentWhiteCount; i++) {
         let d = document.createElement("div"); d.className = "pool-dot white-p";
         pWhites.appendChild(d);
@@ -469,6 +516,7 @@ function saveState() {
 }
 
 function triggerUndoAction() {
+    if(!document.getElementById("opt-undo").checked) return;
     if (!historySnapshot) {
         showCustomAlert("Geri alınacak hamle bulunamadı!");
         return;
@@ -626,13 +674,16 @@ function executeAction(r, c) {
     let movingPiece = grid[selectedPos.r][selectedPos.c];
     if(matched.type === "capture") {
         grid[matched.victim.r][matched.victim.c] = "";
+        playAudio("eat");
+    } else {
+        playAudio("move");
     }
     grid[r][c] = movingPiece;
     grid[selectedPos.r][selectedPos.c] = "";
     lastExecutedMove = { from: { r: selectedPos.r, c: selectedPos.c }, to: { r, c } };
 
-    if(movingPiece === "w" && r === 0) grid[r][c] = "W";
-    if(movingPiece === "b" && r === 7) grid[r][c] = "B";
+    if(movingPiece === "w" && r === 0) { grid[r][c] = "W"; playAudio("king"); }
+    if(movingPiece === "b" && r === 7) { grid[r][c] = "B"; playAudio("king"); }
 
     updateTopPools();
 
@@ -694,4 +745,3 @@ function triggerBotIntelligence() {
 </script>
 </body>
 </html>
-    
