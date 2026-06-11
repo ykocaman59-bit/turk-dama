@@ -3,226 +3,543 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Türk Daması</title>
+<title>Türk Daması - Profesyonel</title>
 
 <style>
-body{
-    font-family:Arial;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    background:#f0f0f0;
-    user-select:none;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #2c1d11;
+    color: #fff;
+    user-select: none;
+    margin: 0;
+    padding: 20px;
 }
 
-h1{ margin:10px; }
-
-#board{
-    display:grid;
-    grid-template-columns:repeat(8,70px);
-    grid-template-rows:repeat(8,70px);
-    border:4px solid #333;
+h1 {
+    margin: 10px 0;
+    text-shadow: 2px 2px 4px #000;
 }
 
-.cell{
-    width:70px;
-    height:70px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:32px;
-    cursor:pointer;
+#status {
+    font-size: 18px;
+    margin-bottom: 15px;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #c19a6b;
 }
 
-.light{ background:#f5deb3; }
-.dark{ background:#c19a6b; }
+/* Tahta Tasarımı */
+#board-wrapper {
+    padding: 15px;
+    background: #5c3a21;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    border: 4px solid #3d2314;
+}
 
-.selected{ outline:4px solid yellow; }
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, 65px);
+    grid-template-rows: repeat(8, 65px);
+    border: 3px solid #1a0f0a;
+}
+
+.cell {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+}
+
+/* Ahşap Görünümlü Kareler */
+.light { background: #e8c39e; }
+.dark { background: #b07c53; }
+
+.selected {
+    outline: 4px solid #ffeb3b;
+    outline-offset: -4px;
+    z-index: 2;
+}
+
+.highlight-move {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(46, 204, 113, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.highlight-capture {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(231, 76, 60, 0.4);
+    pointer-events: none;
+}
+
+/* Menü ve Modal Tasarımı (Görseldeki gibi) */
+#menu-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.parchment {
+    background: #e6c280;
+    background-image: radial-gradient(circle, #f3dbab 0%, #d4a359 100%);
+    color: #4a2c11;
+    padding: 30px;
+    border-radius: 15px;
+    border: 5px solid #6b3e11;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    width: 320px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.parchment h2 {
+    margin-top: 0;
+    border-bottom: 2px solid #6b3e11;
+    padding-bottom: 10px;
+}
+
+.option-group {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.option-group input {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.stone-select {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.stone-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #6b3e11;
+    font-size: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.stone-btn.black-btn { background: #222; color: #fff; }
+.stone-btn.active { outline: 4px solid #2ecc71; }
+
+.start-btn {
+    background: #6b3e11;
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 5px rgba(0,0,0,0.4);
+}
+.start-btn:hover { background: #522f0d; }
+
+#reset-btn {
+    margin-top: 15px;
+    background: #c19a6b;
+    color: #2c1d11;
+    border: none;
+    padding: 8px 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
 </style>
 </head>
-
 <body>
 
-<h1>Türk Daması</h1>
-<div id="status"></div>
-<div id="board"></div>
+<h1>TÜRK DAMASI</h1>
+<div id="status">Sıra: Beyaz</div>
+
+<div id="board-wrapper">
+    <div id="board"></div>
+</div>
+
+<button id="reset-btn" onclick="showMenu()">Yeni Oyun Ayarları</button>
+
+<div id="menu-modal">
+    <div class="parchment">
+        <h2>Yeni Oyun</h2>
+        <div class="option-group">
+            <input type="checkbox" id="vs-bot" checked>
+            <label for="vs-bot">Tek Oyuncu (Bota Karşı)</label>
+        </div>
+        <p>Taş Seç</p>
+        <div class="stone-select">
+            <div class="stone-btn white-btn active" onclick="selectColor('white')">👑</div>
+            <div class="stone-btn black-btn" onclick="selectColor('black')">👑</div>
+        </div>
+        <button class="start-btn" onclick="startGame()">Bağlan / Başla</button>
+    </div>
+</div>
 
 <script>
 const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status");
+const menuModal = document.getElementById("menu-modal");
 
-let turn = "white";
+let turn = "white"; 
 let selected = null;
+let isBotGame = true;
+let playerColor = "white";
+let comboPiece = null; // Seri yeme durumunda kilitlenen taş koordinatı
 
-// 👑 obje sistem
-let board = [
-["","","","","","","",""],
-["b","b","b","b","b","b","b","b"],
-["b","b","b","b","b","b","b","b"],
-["","","","","","","",""],
-["","","","","","","",""],
-["w","w","w","w","w","w","w","w"],
-["w","w","w","w","w","w","w","w"],
-["","","","","","","",""]
-];
+// Matris Yapısı: 
+// "w" = Beyaz Düz, "W" = Beyaz Dama
+// "b" = Siyah Düz, "B" = Siyah Dama
+// "" = Boş Kare
+let board = [];
 
-function getPiece(v){
-    if(!v) return null;
-    return {
-        color: v,
-        king:false
-    };
+function initBoard() {
+    board = [
+        ["","","","","","","",""],
+        ["b","b","b","b","b","b","b","b"],
+        ["b","b","b","b","b","b","b","b"],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["w","w","w","w","w","w","w","w"],
+        ["w","w","w","w","w","w","w","w"],
+        ["","","","","","","",""]
+    ];
 }
 
-function setPiece(p){
-    return p ? p.color : "";
+function selectColor(color) {
+    playerColor = color;
+    document.querySelectorAll('.stone-btn').forEach(btn => btn.classList.remove('active'));
+    if(color === 'white') document.querySelector('.white-btn').classList.add('active');
+    else document.querySelector('.black-btn').classList.add('active');
 }
 
-function inBoard(r,c){
-    return r>=0 && r<8 && c>=0 && c<8;
+function showMenu() {
+    menuModal.style.display = "flex";
 }
 
-// 🧠 zorunlu yeme kontrolü
-function hasCapture(color){
-    for(let r=0;r<8;r++){
-        for(let c=0;c<8;c++){
-            if(board[r][c]===color[0]){
-                if(getMoves(r,c,true).length>0) return true;
+function startGame() {
+    isBotGame = document.getElementById("vs-bot").checked;
+    menuModal.style.display = "none";
+    initBoard();
+    turn = "white";
+    selected = null;
+    comboPiece = null;
+    draw();
+    
+    if(isBotGame && playerColor === "black" && turn === "white") {
+        setTimeout(makeBotMove, 600);
+    }
+}
+
+function inBoard(r, c) {
+    return r >= 0 && r < 8 && c >= 0 && c < 8;
+}
+
+// Bütün tahtada herhangi bir yeme (hamlesi) zorunluluğu var mı kontrolü
+function hasGlobalCapture(color) {
+    let char = color === "white" ? "wW" : "bB";
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            if (char.includes(board[r][c])) {
+                let moves = getMoves(r, c);
+                if (moves.some(m => m.type === "capture")) return true;
             }
         }
     }
     return false;
 }
 
-// 🧠 Türk daması hareket sistemi
-function getMoves(r,c,onlyCapture=false){
-
+// Belirli bir taşın tüm kurallara uygun hareketlerini çeker
+function getMoves(r, c) {
     let piece = board[r][c];
-    if(!piece) return [];
+    if (!piece) return [];
 
+    let isKing = (piece === "W" || piece === "B");
+    let isWhite = (piece === "w" || piece === "W");
     let moves = [];
 
-    // düz yönler (Türk daması)
-    let dirs = [
-        [1,0],[-1,0],[0,1],[0,-1]
-    ];
+    // Türk Daması Düz Yönleri: [Satır, Sütun] -> İleri, Geri, Sağ, Sol
+    let dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
-    for(let [dr,dc] of dirs){
+    if (!isKing) {
+        // --- NORMAL TAŞ KURALLARI ---
+        // Normal taşlar asla geriye yürüyemez!
+        let forbiddenDir = isWhite ? [1, 0] : [-1, 0]; 
 
-        // normal hareket
-        let nr = r+dr;
-        let nc = c+dc;
+        for (let [dr, dc] of dirs) {
+            if (dr === forbiddenDir[0] && dc === forbiddenDir[1]) continue;
 
-        if(inBoard(nr,nc) && board[nr][nc]===""){
-            if(!onlyCapture){
-                moves.push({r:nr,c:nc,type:"move"});
+            // 1) Normal Yürüme
+            let nr = r + dr, nc = c + dc;
+            if (inBoard(nr, nc) && board[nr][nc] === "") {
+                moves.push({ r: nr, c: nc, type: "move" });
+            }
+
+            // 2) Rakip Taş Yeme (Tam yanındaki taşı atlayarak boşluğa konma)
+            let er = r + dr, ec = c + dc;   // ezilen/yenen düşman karesi
+            let lr = r + dr * 2, lc = c + dc * 2; // iniş karesi
+            if (inBoard(lr, lc) && inBoard(er, ec)) {
+                let target = board[er][ec];
+                if (target !== "" && isWhite !== ("wW".includes(target))) {
+                    if (board[lr][lc] === "") {
+                        moves.push({ r: lr, c: lc, type: "capture", eat: { r: er, c: ec } });
+                    }
+                }
             }
         }
+    } else {
+        // --- DAMA (KRAL) KURALLARI ---
+        // Kale gibi sonsuz kare uçabilir, geriye de gidebilir.
+        for (let [dr, dc] of dirs) {
+            let nr = r + dr, nc = c + dc;
+            let enemyFound = null;
 
-        // yeme (2 adım)
-        let er = r+dr;
-        let ec = c+dc;
-        let lr = r+dr*2;
-        let lc = c+dc*2;
+            while (inBoard(nr, nc)) {
+                let current = board[nr][nc];
 
-        if(inBoard(lr,lc) && inBoard(er,ec)){
-            if(board[er][ec] && board[er][ec]!==piece){
+                if (!enemyFound) {
+                    if (current === "") {
+                        moves.push({ r: nr, c: nc, type: "move" });
+                    } else if (isWhite !== ("wW".includes(current))) {
+                        // İlk düşman taşı tespit edildi, arkasındaki boşlukları tarayalım
+                        enemyFound = { r: nr, c: ec = nc };
+                    } else {
+                        // Kendi taşımıza çarptık, hat kapandı
+                        break;
+                    }
+                } else {
+                    // Düşmanı geçtikten sonraki boş kareler
+                    if (current === "") {
+                        moves.push({ r: nr, c: nc, type: "capture", eat: { r: enemyFound.r, c: enemyFound.c } });
+                    } else {
+                        // İkinci bir taşa çarptık (düşman veya dost fark etmez), hat kapandı
+                        break;
+                    }
+                }
+                nr += dr; nc += dc;
+            }
+        }
+    }
+    return moves;
+}
 
-                if(board[lr][lc]===""){
-                    moves.push({
-                        r:lr,
-                        c:lc,
-                        type:"capture",
-                        eat:{r:er,c:ec}
-                    });
+// Filtreleme: Zorunlu yeme kurallarını ve kombo durumunu işler
+function getLegalMoves(r, c) {
+    // Eğer zincirleme yeme (combo) aktifse sadece o kilitli taş oynayabilir
+    if (comboPiece && (comboPiece.r !== r || comboPiece.c !== c)) return [];
+
+    let moves = getMoves(r, c);
+    let pieceColor = "white";
+    if ("bB".includes(board[r][c])) pieceColor = "black";
+
+    // Kural: Eğer tahtada herhangi bir yeme hamlesi varsa, oyuncu normal yürüme yapamaz.
+    if (hasGlobalCapture(pieceColor)) {
+        moves = moves.filter(m => m.type === "capture");
+    }
+    return moves;
+}
+
+function draw() {
+    boardEl.innerHTML = "";
+
+    // Aktif oyuncunun yeme zorunluluğu var mı?
+    let globalCaptureExists = hasGlobalCapture(turn);
+
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            let cell = document.createElement("div");
+            cell.className = "cell " + ((r + c) % 2 ? "dark" : "light");
+
+            if (selected && selected.r === r && selected.c === c) {
+                cell.classList.add("selected");
+            }
+
+            let v = board[r][c];
+            if (v) {
+                if (v === "w") cell.textContent = "⚪";
+                else if (v === "W") cell.textContent = "👑"; // Beyaz Dama
+                else if (v === "b") cell.textContent = "⚫";
+                else if (v === "B") cell.textContent = "👑"; // Siyah Dama
+                
+                // Dama taşlarına ayırt edici renk (Siyah damaya kırmızı/altın taç efekti vs simüle etmek için yazı rengi)
+                if(v === "B") cell.style.color = "#ff4444";
+                if(v === "W") cell.style.color = "#ffcc00";
+            }
+
+            // Seçili taşın gidebileceği yerleri hücre içinde küçük yeşil/kırmızı noktalarla görselleştir
+            if (selected) {
+                let legals = getLegalMoves(selected.r, selected.c);
+                let isTarget = legals.find(m => m.r === r && m.c === c);
+                if (isTarget) {
+                    let indicator = document.createElement("div");
+                    indicator.className = isTarget.type === "capture" ? "highlight-capture" : "highlight-move";
+                    cell.appendChild(indicator);
+                }
+            }
+
+            cell.onclick = () => clickCell(r, c);
+            boardEl.appendChild(cell);
+        }
+    }
+
+    statusEl.textContent = "Sıra: " + (turn === "white" ? "Beyaz (Sizde)" : "Siyah (Rakipte)");
+    if(comboPiece) statusEl.textContent += " [Seri Yemeye Devam Et!]";
+}
+
+function clickCell(r, c) {
+    // Sıra botta ise tıklamaları engelle
+    if (isBotGame && turn !== playerColor) return;
+
+    let piece = board[r][c];
+    let isWhiteTurn = turn === "white";
+
+    // Kendi taşına tıkladıysa seç
+    if (piece && (isWhiteTurn === "wW".includes(piece))) {
+        if (comboPiece && (comboPiece.r !== r || comboPiece.c !== c)) return; // Kombo zincirindeyse taş değiştiremez
+        selected = { r, c };
+        draw();
+        return;
+    }
+
+    if (!selected) return;
+
+    // Boş kareye veya hedef kareye tıklandıysa hareket ettirmeyi dene
+    executeMove(r, c);
+}
+
+function executeMove(r, c) {
+    let legals = getLegalMoves(selected.r, selected.c);
+    let valid = legals.find(m => m.r === r && m.c === c);
+    
+    if (!valid) return;
+
+    let piece = board[selected.r][selected.c];
+
+    // Taş Yeme İşlemi
+    if (valid.type === "capture") {
+        board[valid.eat.r][valid.eat.c] = ""; // Taş tahtadan kalkar
+    }
+
+    // Taşı yeni konumuna kaydır
+    board[r][c] = piece;
+    board[selected.r][selected.c] = "";
+
+    // --- DAMA (TERFİ) KONTROLÜ ---
+    // Taş tam karşı çizgiye vardığında kalıcı olarak Dama (büyük harf) olur
+    if (piece === "w" && r === 0) board[r][c] = "W";
+    if (piece === "b" && r === 7) board[r][c] = "B";
+
+    // Zincirleme yeme (Combo) Kontrolü
+    if (valid.type === "capture") {
+        let nextMoves = getMoves(r, c).filter(m => m.type === "capture");
+        if (nextMoves.length > 0) {
+            // Hâlâ yenecek taş var! Sıra değişmez, aynı taş kilitlenir.
+            comboPiece = { r, c };
+            selected = { r, c };
+            draw();
+            
+            // Eğer bot kombo yapıyorsa devam ettir
+            if (isBotGame && turn !== playerColor) {
+                setTimeout(makeBotMove, 600);
+            }
+            return;
+        }
+    }
+
+    // Kombo bitti veya normal hareket yapıldıysa sıra karşı tarafa geçer
+    comboPiece = null;
+    selected = null;
+    turn = (turn === "white") ? "black" : "white";
+    draw();
+
+    // Oyun bitti mi kontrolü
+    checkGameOver();
+
+    // Bot Hamle Tetikleyici
+    if (isBotGame && turn !== playerColor) {
+        setTimeout(makeBotMove, 600);
+    }
+}
+
+// Basit ve Kurallara Uyan Yapay Zeka (Bot mekaniği)
+function makeBotMove() {
+    let botPieces = [];
+    let char = turn === "white" ? "wW" : "bB";
+
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            if (char.includes(board[r][c])) {
+                let legals = getLegalMoves(r, c);
+                if (legals.length > 0) {
+                    botPieces.push({ r, c, moves: legals });
                 }
             }
         }
     }
 
-    return moves;
+    if (botPieces.length === 0) return; // Hamle kalmadıysa oyun biter.
+
+    // Bot öncelikle yeme hamlesi olan taşları tercih etmek zorundadır (Filtreleme zaten getLegalMoves içinde yapılıyor)
+    // Rastgele bir geçerli taş ve o taşın rastgele geçerli bir hamlesini seçer
+    let choicePiece = botPieces[Math.floor(Math.random() * botPieces.length)];
+    let choiceMove = choicePiece.moves[Math.floor(Math.random() * choicePiece.moves.length)];
+
+    selected = { r: choicePiece.r, c: choicePiece.c };
+    executeMove(choiceMove.r, choiceMove.c);
 }
 
-// 🧠 zorunlu yeme varsa sadece capture
-function filterMoves(moves,color){
-    if(hasCapture(color)){
-        return moves.filter(m=>m.type==="capture");
-    }
-    return moves;
-}
+function checkGameOver() {
+    let whiteHasMoves = false;
+    let blackHasMoves = false;
 
-function draw(){
-
-    boardEl.innerHTML="";
-
-    for(let r=0;r<8;r++){
-        for(let c=0;c<8;c++){
-
-            let cell=document.createElement("div");
-            cell.className="cell "+((r+c)%2?"dark":"light");
-
-            if(selected && selected.r===r && selected.c===c){
-                cell.classList.add("selected");
-            }
-
-            let v = board[r][c];
-
-            if(v){
-                cell.textContent = (v==="w") ? "⚪" : "⚫";
-            }
-
-            cell.onclick=()=>clickCell(r,c);
-
-            boardEl.appendChild(cell);
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            if ("wW".includes(board[r][c]) && getLegalMoves(r, c).length > 0) whiteHasMoves = true;
+            if ("bB".includes(board[r][c]) && getLegalMoves(r, c).length > 0) blackHasMoves = true;
         }
     }
 
-    statusEl.textContent =
-        "Sıra: " + (turn==="white"?"Beyaz":"Siyah");
-}
-
-function clickCell(r,c){
-
-    let piece = board[r][c];
-
-    if(piece && piece[0]===turn[0]){
-        selected={r,c};
-        draw();
-        return;
+    if (!whiteHasMoves) {
+        alert("Oyun Bitti! Siyah Kazandı.");
+        showMenu();
+    } else if (!blackHasMoves) {
+        alert("Oyun Bitti! Beyaz Kazandı.");
+        showMenu();
     }
-
-    if(!selected) return;
-
-    move(r,c);
 }
 
-function move(r,c){
-
-    let moves = getMoves(selected.r,selected.c,false);
-    moves = filterMoves(moves,turn);
-
-    let valid = moves.find(m=>m.r===r && m.c===c);
-    if(!valid) return;
-
-    let piece = board[selected.r][selected.c];
-
-    if(valid.type==="capture"){
-        board[valid.eat.r][valid.eat.c]="";
-    }
-
-    board[r][c]=piece;
-    board[selected.r][selected.c]="";
-
-    // 👑 promotion
-    if(piece==="w" && r===0) board[r][c]="W";
-    if(piece==="b" && r===7) board[r][c]="B";
-
-    turn = (turn==="white")?"black":"white";
-    selected=null;
-
-    draw();
-}
-
+// Oyunu ilk açılışta başlat
+initBoard();
 draw();
 </script>
 
