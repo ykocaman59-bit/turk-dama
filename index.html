@@ -326,7 +326,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
 </head>
 <body>
 
-<!-- GİRİŞ / AÇILIŞ EKRANI -->
 <div id="splash-screen">
     <div class="splash-stone-stack">
         <div class="splash-mini-piece w s1"></div>
@@ -337,21 +336,18 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     <div class="splash-logo">TÜRK DAMASI PRO</div>
 </div>
 
-<!-- ÜST TARAFTAKİ YENİLEN TAŞ HAVUZLARI -->
 <div id="top-container">
     <div class="stone-pool" id="pool-blacks"></div>
     <div class="stone-pool" id="pool-whites"></div>
     <div id="status-bar">Yükleniyor...</div>
 </div>
 
-<!-- OYUN TAHTASI -->
 <div id="board-container">
     <div id="board-wrapper">
         <div id="board"></div>
     </div>
 </div>
 
-<!-- KAHVERENGİ AHŞAP ALT BAR -->
 <div id="bottom-bar">
     <button class="menu-btn" onclick="openModal('newgame-pop')">
         <div class="menu-btn-icon-circle">▶</div><span>Yeni</span>
@@ -367,7 +363,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </button>
 </div>
 
-<!-- YENI OYUN PENCERESI -->
 <div id="newgame-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Yeni oyun</h2>
@@ -388,7 +383,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
-<!-- AYARLAR PENCERESİ -->
 <div id="settings-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ayarlar</h2>
@@ -406,7 +400,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
-<!-- OYUN BİTTİ PENCERESİ -->
 <div id="gameover-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment" style="border-color: #2ecc71;">
         <h2 style="color: #2ecc71; border-bottom-color: #2ecc71;">Oyun Bitti</h2>
@@ -415,7 +408,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
-<!-- ANA MENÜ PENCERESİ -->
 <div id="mainmenu-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ana Menü</h2>
@@ -424,7 +416,6 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
-<!-- UYARI PENCERESİ -->
 <div id="alert-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment" style="border-color: #8c2d19;">
         <h2 style="color: #8c2d19; border-bottom-color: #8c2d19;">Sistem Uyarısı</h2>
@@ -661,11 +652,12 @@ function getLegalMoves(r, c) {
     return list;
 }
 
-/* OYUNUN ERKEN BİTMESİNİ ENGELLEYEN VE TAŞLARIN TAMAMEN BİTMESİNİ KONTROL EDEN GÜVENLİ FONKSİYON */
+/* --- KESİN VE GARANTİLİ OYUN BİTTİ KONTROLÜ --- */
 function checkGameEndConditions() {
     let wCount = 0, bCount = 0;
     let wMoves = 0, bMoves = 0;
 
+    // Tüm tahtayı tamamen tara
     for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
             let token = grid[r][c];
@@ -679,18 +671,32 @@ function checkGameEndConditions() {
         }
     }
 
-    // Beyazın hiç taşı kalmadıysa VEYA taşı olmasına rağmen yapacak hiçbir hamlesi yoksa (kilitlendiyse) Siyah kazanır
-    if (wCount === 0 || (activeTurn === "white" && wMoves === 0)) {
+    // Durum 1: Beyazın hiç taşı kalmadıysa kesinlikle Siyah kazandı
+    if (wCount === 0) {
         document.getElementById("gameover-message").textContent = "Siyah Oyuncu Kazandı!";
         openModal("gameover-pop");
         return true;
     }
-    // Siyahın hiç taşı kalmadıysa VEYA taşı olmasına rağmen yapacak hiçbir hamlesi yoksa (kilitlendiyse) Beyaz kazanır
-    if (bCount === 0 || (activeTurn === "black" && bMoves === 0)) {
+    
+    // Durum 2: Siyahın hiç taşı kalmadıysa kesinlikle Beyaz kazandı
+    if (bCount === 0) {
         document.getElementById("gameover-message").textContent = "Beyaz Oyuncu Kazandı!";
         openModal("gameover-pop");
         return true;
     }
+
+    // Durum 3: Kilitlenme Kontrolü (Taş var ama hamle yoksa)
+    if (activeTurn === "white" && wMoves === 0) {
+        document.getElementById("gameover-message").textContent = "Siyah Oyuncu Kazandı!";
+        openModal("gameover-pop");
+        return true;
+    }
+    if (activeTurn === "black" && bMoves === 0) {
+        document.getElementById("gameover-message").textContent = "Beyaz Oyuncu Kazandı!";
+        openModal("gameover-pop");
+        return true;
+    }
+
     return false;
 }
 
@@ -797,7 +803,6 @@ function executeAction(r, c) {
     }
     comboPiecePos = null; selectedPos = null;
     
-    // Sıra değişmeden önce oyun bitti mi kontrolü yapılıyor
     if(checkGameEndConditions()) return;
     
     activeTurn = (activeTurn === "white") ? "black" : "white";
