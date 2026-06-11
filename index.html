@@ -27,7 +27,7 @@ body {
 /* --- İLK AÇILIŞ / GİRİŞ EKRANI (SPLASH SCREEN) --- */
 #splash-screen {
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vw; height: 100vh;
+    top: 0; left: 0; width: 100vw; height: 100vh;
     background: #1a0f0a linear-gradient(135deg, #2c1608 0%, #000000 100%);
     display: flex;
     flex-direction: column;
@@ -36,21 +36,51 @@ body {
     z-index: 999;
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
+/* Görseldeki gibi üst üste dizilmiş ahşap taş yığını tasarımı */
+.splash-stone-stack {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 25px;
+}
+.splash-mini-piece {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.7);
+}
+.splash-mini-piece::before {
+    content: ""; position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;
+    border-radius: 50%; border: 2px double rgba(90, 51, 11, 0.25);
+}
+.splash-mini-piece::after {
+    content: ""; position: absolute; top: 32%; left: 32%; width: 36%; height: 36%;
+    border-radius: 50%; border: 1px solid rgba(90, 51, 11, 0.2);
+}
+.splash-mini-piece.w { background: radial-gradient(circle, #f9e2ba 10%, #dca868 90%); border: 2px solid #b5864d; }
+.splash-mini-piece.b { 
+    background: radial-gradient(circle, #555555 10%, #151515 90%); border: 2px solid #000; 
+}
+.splash-mini-piece.b::before, .splash-mini-piece.b::after { border-color: rgba(255,255,255,0.15); }
+
+/* Taşların üst üste yığılma perspektifleri */
+.s1 { top: 0; left: 30px; z-index: 1; }
+.s2 { top: 15px; left: 10px; z-index: 2; }
+.s3 { top: 20px; left: 50px; z-index: 3; }
+.s4 { top: 40px; left: 25px; z-index: 4; }
+
 .splash-logo {
     font-size: 32px;
     font-weight: bold;
     color: #e6c280;
     text-shadow: 0 4px 10px rgba(0,0,0,0.9);
-    margin-bottom: 10px;
     letter-spacing: 2px;
-}
-.splash-sub {
-    font-size: 14px;
-    color: #b5864d;
-    letter-spacing: 4px;
+    text-align: center;
+    z-index: 10;
 }
 
-/* --- TEPEDEKİ TAŞ VE MERMİ HAVUZLARI --- */
+/* --- TEPEDEKİ YENİLEN TAŞLAR HAVUZU --- */
 #top-container {
     width: 100%;
     max-width: 450px;
@@ -62,22 +92,32 @@ body {
 }
 .stone-pool {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    align-items: center;
     width: 100%;
-    height: 24px;
-    gap: 4px;
-    background: rgba(255,255,255,0.04);
+    height: 28px;
+    gap: 3px;
+    background: rgba(255,255,255,0.03);
     padding: 2px 8px;
     border-radius: 6px;
+    overflow: hidden;
 }
-.pool-dot {
-    width: 18px;
-    height: 18px;
+/* Gerçekçi Taş Şeklindeki Küçük Havuz İkonları */
+.pool-stone-icon {
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 2px rgba(255,255,255,0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    position: relative;
 }
-.pool-dot.white-p { background: radial-gradient(circle, #ffffff 30%, #a3a3a3 90%); border: 1px solid #777; }
-.pool-dot.black-p { background: radial-gradient(circle, #555555 20%, #111111 90%); border: 1px solid #000; }
+.pool-stone-icon::before {
+    content: ""; position: absolute; top: 20%; left: 20%; width: 60%; height: 60%;
+    border-radius: 50%; border: 1px double rgba(0,0,0,0.15);
+}
+.pool-stone-icon.w { background: radial-gradient(circle, #f9e2ba 10%, #dca868 90%); border: 1px solid #b5864d; }
+.pool-stone-icon.w::before { border-color: rgba(90, 51, 11, 0.2); }
+.pool-stone-icon.b { background: radial-gradient(circle, #555555 10%, #151515 90%); border: 1px solid #000; }
+.pool-stone-icon.b::before { border-color: rgba(255, 255, 255, 0.1); }
 
 #status-bar {
     font-size: 14px;
@@ -290,23 +330,32 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
 </head>
 <body>
 
+<!-- GİRİŞ / AÇILIŞ EKRANI (SPLASH SCREEN) -->
 <div id="splash-screen">
+    <div class="splash-stone-stack">
+        <div class="splash-mini-piece w s1"></div>
+        <div class="splash-mini-piece b s2"></div>
+        <div class="splash-mini-piece w s3"></div>
+        <div class="splash-mini-piece b s4"></div>
+    </div>
     <div class="splash-logo">TÜRK DAMASI PRO</div>
-    <div class="splash-sub">YKOCAMAN59</div>
 </div>
 
+<!-- ÜST TARAFTAKİ YENİLEN TAŞ HAVUZLARI -->
 <div id="top-container">
     <div class="stone-pool" id="pool-blacks"></div>
     <div class="stone-pool" id="pool-whites"></div>
     <div id="status-bar">Yükleniyor...</div>
 </div>
 
+<!-- OYUN TAHTASI -->
 <div id="board-container">
     <div id="board-wrapper">
         <div id="board"></div>
     </div>
 </div>
 
+<!-- KAHVERENGİ AHŞAP ALT BAR -->
 <div id="bottom-bar">
     <button class="menu-btn" onclick="openModal('newgame-pop')">
         <div class="menu-btn-icon-circle">▶</div><span>Yeni</span>
@@ -322,6 +371,7 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </button>
 </div>
 
+<!-- GİRİŞ / YENİ OYUN PENCERESİ -->
 <div id="newgame-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Yeni oyun</h2>
@@ -342,6 +392,7 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
+<!-- AYARLAR PENCERESİ -->
 <div id="settings-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ayarlar</h2>
@@ -350,7 +401,7 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
             <input type="range" id="bot-tier" min="1" max="3" value="2">
             <div class="range-labels"><span>Kolay</span><span>Normal</span><span>Zor</span></div>
         </div>
-        <div class="setup-row"><input type="checkbox" id="opt-lastmove" checked onchange="renderBoard()"><label>Son hamleyi göster</label></div>
+        <div class="setup-row"><input type="checkbox" id="opt-lastmove" checked append to renderBoard()><label>Son hamleyi göster</label></div>
         <div class="setup-row"><input type="checkbox" id="opt-undo" checked onchange="handleUndoCheckboxChange()"><label>Geri almayı etkinleştir</label></div>
         <div class="setup-row"><input type="checkbox" id="opt-hints" checked><label>Gidilecek kareleri işaretle</label></div>
         <div class="setup-row"><input type="checkbox" id="opt-frame" checked onchange="applyFrameSettings()"><label>Tahta çerçevesini göster</label></div>
@@ -359,6 +410,16 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
+<!-- OYUN BİTTİ / KAZANAN PENCERESİ -->
+<div id="gameover-pop" class="modal-layer" style="display: none;">
+    <div class="scroll-parchment" style="border-color: #2ecc71;">
+        <h2 style="color: #2ecc71; border-bottom-color: #2ecc71;">Oyun Bitti</h2>
+        <p id="gameover-message" style="margin: 20px 0; font-size: 18px; color: #1a0f0a;"></p>
+        <button class="action-submit" style="background: #2ecc71;" onclick="closeModal('gameover-pop'); openModal('newgame-pop');">Yeni Oyun</button>
+    </div>
+</div>
+
+<!-- ANA MENÜ PENCERESİ -->
 <div id="mainmenu-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment">
         <h2>Ana Menü</h2>
@@ -367,6 +428,7 @@ input[type="range"] { width: 100%; accent-color: #5a330b; cursor: pointer; }
     </div>
 </div>
 
+<!-- ÖZEL UYARI PENCERESİ -->
 <div id="alert-pop" class="modal-layer" style="display: none;">
     <div class="scroll-parchment" style="border-color: #8c2d19;">
         <h2 style="color: #8c2d19; border-bottom-color: #8c2d19;">Sistem Uyarısı</h2>
@@ -402,7 +464,7 @@ function playAudio(type) {
             gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
             osc.start(); osc.stop(audioCtx.currentTime + 0.22);
         }
-    } catch(e) { console.log("Ses çalınamadı", e); }
+    } catch(e) { console.log("Ses hatası", e); }
 }
 
 // OYUN HAFIZA ALANI
@@ -417,6 +479,10 @@ let selectedPos = null;
 let comboPiecePos = null;
 let lastExecutedMove = null;
 let historySnapshot = null;
+
+// Yenilen taşların sayısını tutan sayaçlar (Maksimum 16 adet)
+let deadWhites = 0;
+let deadBlacks = 0;
 
 function openModal(id) { document.getElementById(id).style.display = "flex"; }
 function closeModal(id) { document.getElementById(id).style.display = "none"; }
@@ -443,7 +509,7 @@ function showCustomAlert(msg) {
     openModal('alert-pop');
 }
 
-// GİRİŞ EKRANI SÜRESİ (2 Saniye parıldar ve kaybolur)
+// GİRİŞ EKRANI SÜRESİ
 window.addEventListener("DOMContentLoaded", () => {
     handleUndoCheckboxChange();
     setTimeout(() => {
@@ -475,6 +541,8 @@ function startNewGame() {
     comboPiecePos = null;
     lastExecutedMove = null;
     historySnapshot = null;
+    deadWhites = 0;
+    deadBlacks = 0;
 
     applyFrameSettings();
     updateTopPools();
@@ -484,25 +552,22 @@ function startNewGame() {
     }
 }
 
+// Mermi mantığı yerine yendikçe eklenen gerçekçi mini taş havuzu güncellemesi
 function updateTopPools() {
-    let currentWhiteCount = 0, currentBlackCount = 0;
-    for(let r=0; r<8; r++) {
-        for(let c=0; c<8; c++) {
-            if("wW".includes(grid[r][c])) currentWhiteCount++;
-            if("bB".includes(grid[r][c])) currentBlackCount++;
-        }
-    }
     let pWhites = document.getElementById("pool-whites");
     let pBlacks = document.getElementById("pool-blacks");
     if(!pWhites || !pBlacks) return;
     
     pWhites.innerHTML = ""; pBlacks.innerHTML = "";
-    for(let i=0; i<currentWhiteCount; i++) {
-        let d = document.createElement("div"); d.className = "pool-dot white-p";
+    
+    // Beyazların yediği siyah taşlar üst havuzda belirir
+    for(let i=0; i<deadBlacks; i++) {
+        let d = document.createElement("div"); d.className = "pool-stone-icon b";
         pWhites.appendChild(d);
     }
-    for(let i=0; i<currentBlackCount; i++) {
-        let d = document.createElement("div"); d.className = "pool-dot black-p";
+    // Siyahların yediği beyaz taşlar alt havuzda belirir
+    for(let i=0; i<deadWhites; i++) {
+        let d = document.createElement("div"); d.className = "pool-stone-icon w";
         pBlacks.appendChild(d);
     }
 }
@@ -511,6 +576,8 @@ function saveState() {
     historySnapshot = {
         grid: JSON.parse(JSON.stringify(grid)),
         activeTurn: activeTurn,
+        deadWhites: deadWhites,
+        deadBlacks: deadBlacks,
         lastExecutedMove: lastExecutedMove ? JSON.parse(JSON.stringify(lastExecutedMove)) : null
     };
 }
@@ -523,6 +590,8 @@ function triggerUndoAction() {
     }
     grid = historySnapshot.grid;
     activeTurn = historySnapshot.activeTurn;
+    deadWhites = historySnapshot.deadWhites;
+    deadBlacks = historySnapshot.deadBlacks;
     lastExecutedMove = historySnapshot.lastExecutedMove;
     historySnapshot = null;
     selectedPos = null;
@@ -603,6 +672,36 @@ function getLegalMoves(r, c) {
     return list;
 }
 
+function checkGameEndConditions() {
+    let wCount = 0, bCount = 0;
+    let wMoves = 0, bMoves = 0;
+
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            let token = grid[r][c];
+            if ("wW".includes(token)) {
+                wCount++;
+                wMoves += getLegalMoves(r, c).length;
+            } else if ("bB".includes(token)) {
+                bCount++;
+                bMoves += getLegalMoves(r, c).length;
+            }
+        }
+    }
+
+    if (wCount === 0 || wMoves === 0) {
+        document.getElementById("gameover-message").textContent = "Siyah Oyuncu Kazandı!";
+        openModal("gameover-pop");
+        return true;
+    }
+    if (bCount === 0 || bMoves === 0) {
+        document.getElementById("gameover-message").textContent = "Beyaz Oyuncu Kazandı!";
+        openModal("gameover-pop");
+        return true;
+    }
+    return false;
+}
+
 function renderBoard() {
     let bEl = document.getElementById("board");
     if(!bEl) return;
@@ -673,6 +772,10 @@ function executeAction(r, c) {
     saveState();
     let movingPiece = grid[selectedPos.r][selectedPos.c];
     if(matched.type === "capture") {
+        let victimPiece = grid[matched.victim.r][matched.victim.c];
+        if("wW".includes(victimPiece)) deadWhites++;
+        if("bB".includes(victimPiece)) deadBlacks++;
+        
         grid[matched.victim.r][matched.victim.c] = "";
         playAudio("eat");
     } else {
@@ -693,6 +796,7 @@ function executeAction(r, c) {
             comboPiecePos = { r, c };
             selectedPos = { r, c };
             renderBoard();
+            if(checkGameEndConditions()) return;
             if(isSinglePlayer && activeTurn !== playerColor) {
                 setTimeout(triggerBotIntelligence, 600);
             }
@@ -700,6 +804,8 @@ function executeAction(r, c) {
         }
     }
     comboPiecePos = null; selectedPos = null;
+    if(checkGameEndConditions()) return;
+    
     activeTurn = (activeTurn === "white") ? "black" : "white";
     renderBoard();
     triggerBotCheck();
@@ -722,7 +828,10 @@ function triggerBotIntelligence() {
             }
         }
     }
-    if(availableUnits.length === 0) return;
+    if(availableUnits.length === 0) {
+        checkGameEndConditions();
+        return;
+    }
 
     let hasCaptureMove = availableUnits.some(u => u.options.some(o => o.type === "capture"));
     if(hasCaptureMove) {
